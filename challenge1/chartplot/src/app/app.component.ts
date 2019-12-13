@@ -89,7 +89,10 @@ export class AppComponent {
   }
 
   getChartDataFromEvents(events: IBasicEvent[]) {
-
+    let plotEngine: any;
+    for (let event of events) {
+      event.run()
+    }
   }
 
   updateChart(newData: void) {
