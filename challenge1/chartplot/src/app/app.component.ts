@@ -1,47 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { ResizeEvent } from 'angular-resizable-element';
 
-class TimeSeriesKey {
-  private group: string[];
-  private seriesName: string;
-
-  constructor(groupValues: string[], seriesName: string) {
-    this.group = groupValues;
-    this.seriesName = seriesName;
-  }
-
-  getFormattedKey(): string {
-    let formattedValue = "";
-    for (let groupValue of this.group) {
-      formattedValue += groupValue + "____";
-    }
-    formattedValue += this.seriesName;
-    return formattedValue;
-  }
-}
+import { PlotEngine } from './PlotEngine'
+import { IPlotEngine } from "./IPlotEngine";
+import { IChartData } from "./chart/IChartData";
+import { IBasicEvent, IStopEvent, ISpanEvent } from "./events";
+import { StartEvent } from "./StartEvent";
+import { DataEvent } from "./DataEvent";
+import { StopEvent } from "./StopEvent";
+import { SpanEvent } from "./SpanEvent";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+
   title = 'chartplot';
 
   private plotEngine: IPlotEngine;
   private currentData: string[];
 
+  @ViewChild('editor', { static: true })
+  editor;
+
+  plotData: IChartData;
+  editorHeight = 200;
+
   constructor() {
-    this.plotEngine = new PlotEngine();  // todo: remove new keyword and use a factory pattern.
+    this.plotEngine = new PlotEngine(); // todo: remove new keyword and use a factory pattern.
   }
 
   onEventsChanged(jsonData: string) {
-    this.currentData = jsonData.split("\\n");
+    this.currentData = jsonData.split("\n");
   }
 
   generateChart() {
     const events = this.parseEvents();
     const newData = this.getChartDataFromEvents(events);
     this.updateChart(newData);
+  }
+
+  ngAfterViewInit(): void {
+    this.editor.getEditor().getSession().setUseWorker(false);
   }
 
   private parseEvents(): IBasicEvent[] {
@@ -80,11 +82,11 @@ export class AppComponent {
     case "start":
       return new StartEvent(parsedEvent, this.plotEngine);
     case "stop":
-      return parsedEvent as IStopEvent;
+      return new StopEvent(parsedEvent, this.plotEngine);
     case "data":
       return new DataEvent(parsedEvent, this.plotEngine);
     case "span":
-      return parsedEvent as ISpanEvent;
+      return new SpanEvent(parsedEvent, this.plotEngine);
     default:
       return null;
     }
@@ -97,6 +99,19 @@ export class AppComponent {
   }
 
   updateChart(newData: IChartData) {
+    if (newData)
+      this.plotData = newData;
+    else
+      this.plotData = null;
+  }
 
+  onValidateResize(event: ResizeEvent) {
+    if (event.rectangle.height > 150 && event.rectangle.height < 450)
+      return true;
+    return false;
+  }
+
+  onResizeEnd(event: ResizeEvent) {
+    this.editorHeight = event.rectangle.height;
   }
 }

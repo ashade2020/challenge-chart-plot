@@ -8,6 +8,8 @@ import { AceEditorModule } from 'ng2-ace-editor';
 import { ChartsModule } from 'ng2-charts';
 import { ChartComponent } from './chart/chart.component';
 
+import { ResizableModule } from 'angular-resizable-element';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,7 +19,8 @@ import { ChartComponent } from './chart/chart.component';
     BrowserModule,
     AppRoutingModule,
     AceEditorModule,
-    ChartsModule
+    ChartsModule,
+    ResizableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

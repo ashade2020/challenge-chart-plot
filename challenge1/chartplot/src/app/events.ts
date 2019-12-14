@@ -1,4 +1,4 @@
-interface IBasicEvent {
+export interface IBasicEvent {
   /*
    * This is the interface for a basic event. Is is the command equivalent in the command design pattern
    * (https://en.wikipedia.org/wiki/Command_pattern). To execute this command instance, call method execute().
@@ -11,20 +11,20 @@ interface IBasicEvent {
   execute();
 }
 
-interface IStartEvent extends IBasicEvent {
+export interface IStartEvent extends IBasicEvent {
   select: string[];
   group: string[];
 }
 
-interface ISpanEvent extends IBasicEvent {
+export interface ISpanEvent extends IBasicEvent {
   begin: number;
   end: number;
 }
 
-interface IStopEvent extends IBasicEvent {
+export interface IStopEvent extends IBasicEvent {
 }
 
-interface IDataEvent extends IBasicEvent {
+export interface IDataEvent extends IBasicEvent {
   readGroupValues(group: string[]): string[];
   readValue(seriesName: string): number;
 }

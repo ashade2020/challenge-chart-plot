@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { IChartData } from "./IChartData";
+
+import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 
 @Component({
   selector: 'app-chart',
@@ -6,19 +9,74 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
+  @Input()
+  set newData(data: IChartData) {
+    this.updateChart(data);
+  }
+
+  @ViewChild('myChart', null)
+  myChart: BaseChartDirective;
 
   barChartOptions = {
-    scaleShowVerticalLines: false,
-    responsive: true
+    scaleShowVerticalLines: true,
+    responsive: true,
+    legend: {
+      position: 'right'
+    },
+    scales: {
+      xAxes: [
+        {
+          type: 'time',
+          unit: 'second',
+          position: 'bottom',
+          displayFormats: {
+            second: 'h:mm:ss a'
+          },
+          ticks: {}
+        }
+      ]
+    }
   };
 
-  barChartLabels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-  barChartType = 'line';
   barChartLegend = true;
-  barChartData = [
-    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-    { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-  ];
+  barChartData = [];
+
+  private updateChart(chartData: IChartData) {
+    if (chartData) {
+      this.barChartData = chartData.getXyData();
+      this.updateChartRange(chartData);
+    } else
+      this.barChartData = [];
+  }
+
+  private updateChartRange(chartData: IChartData) {
+    const xAxisRange = chartData.getXAxisSpan();
+    if (xAxisRange) {
+      this.barChartOptions = {
+        scaleShowVerticalLines: true,
+        responsive: true,
+        legend: {
+          position: 'right'
+        },
+        scales: {
+          xAxes: [
+            {
+              type: 'time',
+              unit: 'second',
+              position: 'bottom',
+              displayFormats: {
+                second: 'h:mm:ss a'
+              },
+              ticks: {
+                min: xAxisRange[0],
+                max: xAxisRange[1]
+              }
+            }
+          ]
+        }
+      };
+    }
+  }
 
   constructor() {}
 

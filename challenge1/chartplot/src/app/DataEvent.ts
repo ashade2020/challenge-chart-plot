@@ -1,4 +1,7 @@
-class DataEvent implements IDataEvent {
+import { IDataEvent } from "./events";
+import { IPlotEngine } from "./IPlotEngine";
+
+export class DataEvent implements IDataEvent {
   private plotEngine: IPlotEngine;
 
   readValue(seriesName: string): number {

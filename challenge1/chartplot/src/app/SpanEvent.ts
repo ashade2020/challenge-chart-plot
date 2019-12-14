@@ -1,4 +1,7 @@
-class SpanEvent implements ISpanEvent {
+import { IPlotEngine } from "./IPlotEngine";
+import { ISpanEvent } from "./events";
+
+export class SpanEvent implements ISpanEvent {
   private plotEngine: IPlotEngine;
 
   constructor(eventData: any, plotEngine: IPlotEngine) {

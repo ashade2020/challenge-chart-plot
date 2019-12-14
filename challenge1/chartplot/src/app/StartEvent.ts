@@ -1,4 +1,7 @@
-class StartEvent implements IStartEvent {
+import { IPlotEngine } from "./IPlotEngine";
+import { IStartEvent } from "./events";
+
+export class StartEvent implements IStartEvent {
   private plotEngine: IPlotEngine;
 
   constructor(eventData: any, plotEngine: IPlotEngine) {

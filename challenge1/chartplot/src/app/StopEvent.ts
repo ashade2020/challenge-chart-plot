@@ -1,4 +1,7 @@
-class StopEvent implements IStopEvent {
+import { IPlotEngine } from "./IPlotEngine";
+import { IStopEvent } from "./events";
+
+export class StopEvent implements IStopEvent {
   private plotEngine: IPlotEngine;
 
   constructor(eventData: any, plotEngine: IPlotEngine) {

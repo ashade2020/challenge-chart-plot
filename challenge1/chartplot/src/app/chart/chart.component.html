@@ -1,9 +1,11 @@
-<div>
-  <canvas baseChart
-          [datasets]="barChartData"
-          [labels]="barChartLabels"
+<div *ngIf="barChartData && barChartData.length > 0">
+  <canvas baseChart #myChart="base-chart"
           [options]="barChartOptions"
+          [datasets]="barChartData"
           [legend]="barChartLegend"
           chartType="line">
   </canvas>
+</div>
+<div *ngIf="!barChartData || barChartData.length <= 0">
+  <p>Insert your events and click the "Generate Chart" button.</p>
 </div>

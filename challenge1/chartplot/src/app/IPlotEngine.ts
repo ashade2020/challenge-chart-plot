@@ -1,4 +1,7 @@
-interface IPlotEngine {
+import { IStartEvent, ISpanEvent, IStopEvent, IDataEvent } from "./events";
+import { IChartData } from "./chart/IChartData";
+
+export interface IPlotEngine {
   /**
    * This is the receiver equivalent of the command design pattern
    * (https://en.wikipedia.org/wiki/Command_pattern). It works like a state machine that

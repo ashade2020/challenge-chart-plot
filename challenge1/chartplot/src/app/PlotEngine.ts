@@ -1,4 +1,10 @@
-class PlotEngine implements IPlotEngine {
+import { IPlotEngine } from './IPlotEngine'
+import { IStartEvent, ISpanEvent, IStopEvent, IDataEvent } from "./events";
+import { IChartData } from "./chart/IChartData";
+import { XyData } from "./chart/XyData";
+import { ChartData } from "./ChartData";
+
+export class PlotEngine implements IPlotEngine {
   /**
    * This class is the receiver equivalent of the command design pattern
    * (https://en.wikipedia.org/wiki/Command_pattern). It works like a state machine that
@@ -14,30 +20,28 @@ class PlotEngine implements IPlotEngine {
   private endDate: number;
 
   isStarted(): boolean {
-    if (this.startTimestamp)
-      return true;
-    else
+    if (!this.startTimestamp)
       return false;
+    if (this.lastStopTimestamp && this.lastStopTimestamp > this.startTimestamp)
+      return false;
+    return true;
   }
 
   setStart(startEvent: IStartEvent) {
     if (!this.canStart(startEvent))
       return;
+    this.doReset();
     this.startTimestamp = startEvent.timestamp;
     this.select = startEvent.select;
     this.groups = startEvent.group;
-    this.timeSeries = {};
   }
 
   private canStart(startEvent: IStartEvent): boolean {
-    if (this.isStarted())
-      return false;
-    if (!this.startTimestamp || !this.lastStopTimestamp)
-      return true;
     if (!startEvent.timestamp)
       return false;
-    return this.lastStopTimestamp <= startEvent.timestamp;
-
+    if (this.lastStopTimestamp && this.lastStopTimestamp > startEvent.timestamp)
+      return false;
+    return true;
   }
 
   setRange(spanEvent: ISpanEvent) {
@@ -54,7 +58,6 @@ class PlotEngine implements IPlotEngine {
   setStop(stopEvent: IStopEvent) {
     if (!this.isStarted() || !stopEvent.timestamp || stopEvent.timestamp < this.startTimestamp)
       return; // ignore this stop event.
-    this.doReset();
     this.lastStopTimestamp = stopEvent.timestamp;
   }
 
@@ -64,10 +67,12 @@ class PlotEngine implements IPlotEngine {
 
   private doReset() {
     this.startTimestamp = null;
+    this.lastStopTimestamp = null;
     this.select = null;
     this.groups = null;
     this.beginDate = null;
     this.endDate = null;
+    this.timeSeries = {};
   }
 
   addData(dataEvent: IDataEvent) {
@@ -94,7 +99,7 @@ class PlotEngine implements IPlotEngine {
   private getFormattedKey(groupValues: string[], seriesName: string): string {
     let formattedValue = "";
     for (let groupValue of groupValues) {
-      formattedValue += groupValue + "____";
+      formattedValue += groupValue + " ";
     }
     formattedValue += seriesName;
     return formattedValue;
@@ -105,7 +110,7 @@ class PlotEngine implements IPlotEngine {
     const timeSeries = this.timeSeries;
     for (let seriesLabel in timeSeries)
       this.buildXyDataArray(timeSeries[seriesLabel], seriesLabel, xyDataArray);
-    return new ChartData(xyDataArray);
+    return new ChartData(xyDataArray, [this.convertToTime(this.beginDate), this.convertToTime(this.endDate)]);
   }
 
   private buildXyDataArray(seriesValues: [number, number][], seriesLabel: string, currentXyDataArray: XyData[]) {
@@ -123,19 +128,25 @@ class PlotEngine implements IPlotEngine {
   private filterBySpan(seriesValues: [number, number][]): [number, number][] {
     const outValues: [number, number][] = [];
     for (let entry of seriesValues) {
-      if (entry[0] < this.beginDate || entry[0] > this.endDate)
+      if ((this.beginDate && entry[0] < this.beginDate) || (this.endDate && entry[0] > this.endDate))
         continue;
       outValues.push(entry);
     }
     return outValues;
   }
 
-  buildXyDataFromFilteredAndSortedValues(filteredAndSortedValues: [number, number][], label: string): XyData {
-    const xyValues: { x: number,y: number }[] = [];
+  private buildXyDataFromFilteredAndSortedValues(filteredAndSortedValues: [number, number][], label: string): XyData {
+    const xyValues: { x: Date,y: number }[] = [];
     for (let value of filteredAndSortedValues) {
       const [x, y] = value;
-      xyValues.push({ x, y });
+      const xLabel = this.convertToTime(x);
+      xyValues.push({ x: xLabel, y });
     }
     return new XyData(xyValues, label);
+  }
+
+  convertToTime(unixTimestampMs: number): Date {
+    const date = new Date(unixTimestampMs * 1000);
+    return date;
   }
 }
