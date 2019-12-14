@@ -59,6 +59,12 @@ Since some behaviours are not fully specified, I needed to take some decisions:
 {type: 'stop', timestamp: 1519780260210}
 
 
+## Testing
+
+
+
+
+
 
 ################ ORIGINAL TEXT #################
 
