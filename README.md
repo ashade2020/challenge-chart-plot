@@ -22,10 +22,10 @@ To display the charts, I used the module ng2-charts (https://valor-software.com/
 Finally, all the ploting logic is encapsulated within the class ChartComponent, declared in the file chart.component.ts (chartplot/src/app/chart).
 
 ## Running the code
-To run the code, you will need to clone the repository to your local machine, then execute "npm install" withing the folder challenge1/chartplot. This will install all the modules needed to compile the code. Then, after instalation is completed, just run "ng serve" and go to the URL displayed in the console to view the website.
+To run the code, you will need to clone the repository to your local machine, then execute "npm install" within the folder challenge1/chartplot. This will install all the modules needed to compile the code. Then, after instalation is completed, just run "ng serve" and go to the URL displayed in the console to view the website.
 
 ## Protection mechanism for huge amounts of data
-To avoid breaking the application memory at the client, I decided to limit the total number o data points to 1000. Of course, this number is arbitrary and nonsense, unless we are provided with more information about the demands of the application.
+To avoid breaking the application memory at the client, I decided to limit the total number of data points to 1000. Of course, this number is arbitrary and nonsense, unless we are provided with more information about the demands of the application.
 
 After a total of 1000 data points is reached, new data events as IGNORED. Other behaviours could be specified, like downsampling the dataset using any data interpolation scheme. However, I decided to go easy at this one since time is short and there is no clear requirement on what to do with big streams of data.
 
@@ -33,23 +33,39 @@ After a total of 1000 data points is reached, new data events as IGNORED. Other 
 Since some behaviours are not fully specified, I needed to take some decisions:
 
 1 - timestamps are treated as stantard UNIX timestamps.
+
 2 - the x axis uses a time scale in the format h:mm:ss AM/PM.
+
 3 - when a data event does not specify the value of a particular time series, it is not plotted at that data event timestamp.
+
 4 - it is not clear which fonts to use in the json editor and in the rest of the body. Therefore, I decided to use Source Code Pro in the text editor and Source Sans Pro in the rest of the body.
+
 5 - since the template does not specify colors, I tried to use similar colors (exception: the code editor, which uses the monokai theme).
+
 6 - the code editor height can be changed: just drag its bottom border down or up. After releasing the mouse button, the chart will adapt to the new editor height.
+
 7 - non standard JSON is supported (unquoted/single quoted). However, I require that each event declaration takes only one line. Example:
 
 {type: 'start', timestamp: 1519780251293, select: ['min_response_time', 'max_response_time'], group: ['os', 'browser']}
+
 {type: 'span', timestamp: 1519780251293, begin: 1519780251293, end: 1519780251312}
+
 {type: 'data', timestamp: 1519780251293, os: 'linux', browser: 'chrome', min_response_time: 0.1, max_response_time: 1.3}
+
 {type: 'data', timestamp: 1519780251295, os: 'linux', browser: 'chrome', min_response_time: 0.2, max_response_time: 1.0}
+
 {type: 'data', timestamp: 1519780251298, os: 'linux', browser: 'chrome', min_response_time: 0.5, max_response_time: 1.1}
+
 {type: 'data', timestamp: 1519780251299, os: 'linux', browser: 'chrome', min_response_time: 0.9, max_response_time: 1.8}
+
 {type: 'data', timestamp: 1519780251293, os: 'windows', browser: 'chrome', min_response_time: 0.15, max_response_time: 1.13}
+
 {type: 'data', timestamp: 1519780251295, os: 'windows', browser: 'chrome', min_response_time: 0.25, max_response_time: 1.10}
+
 {type: 'data', timestamp: 1519780251298, os: 'windows', browser: 'chrome', min_response_time: 0.55, max_response_time: 1.11}
+
 {type: 'data', timestamp: 1519780251299, os: 'windows', browser: 'chrome', min_response_time: 0.95, max_response_time: 1.18}
+
 {type: 'stop', timestamp: 1519780260210}
 
 
