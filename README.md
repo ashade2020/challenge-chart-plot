@@ -1,4 +1,15 @@
 # Plotting a chart
+PLEASE SCROLL DOWN TO READ THE ORIGINAL STATEMENT OF THE PROBLEM
+
+A) Introduction
+
+This problem has been solved using Angular and Typescript 1.8. Typescript is a supersed of JavaScript and is compiled to JavaScript during deploy
+(https://www.typescriptlang.org/). For a live demo of the solution, please check: challenge1/chartplot/dist/chartplot/index.html
+
+
+
+
+################ ORIGINAL TEXT #################
 
 In this challenge, you will implement a web application that plots a line chart based on some manually input data.
 
