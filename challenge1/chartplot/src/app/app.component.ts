@@ -27,7 +27,12 @@ class TimeSeriesKey {
 export class AppComponent {
   title = 'chartplot';
 
+  private plotEngine: IPlotEngine;
   private currentData: string[];
+
+  constructor() {
+    this.plotEngine = new PlotEngine();  // todo: remove new keyword and use a factory pattern.
+  }
 
   onEventsChanged(jsonData: string) {
     this.currentData = jsonData.split("\\n");
@@ -73,11 +78,11 @@ export class AppComponent {
   private readEventType(parsedEvent: any): IBasicEvent {
     switch (parsedEvent.type) {
     case "start":
-      return parsedEvent as IStartEvent;
+      return new StartEvent(parsedEvent, this.plotEngine);
     case "stop":
       return parsedEvent as IStopEvent;
     case "data":
-      return new DataEvent(parsedEvent);
+      return new DataEvent(parsedEvent, this.plotEngine);
     case "span":
       return parsedEvent as ISpanEvent;
     default:
@@ -86,14 +91,12 @@ export class AppComponent {
   }
 
   getChartDataFromEvents(events: IBasicEvent[]) {
-    let plotEngine: PlotEngine;
-    for (let event of events) {
-      plotEngine.setStart(event);
-    }
-    return plotEngine.readChartData();
+    for (let event of events)
+      event.execute();
+    return this.plotEngine.readChartData();
   }
 
-  updateChart(newData: void) {
+  updateChart(newData: IChartData) {
 
   }
 }

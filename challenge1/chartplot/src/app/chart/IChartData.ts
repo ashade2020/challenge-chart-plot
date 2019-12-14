@@ -1,0 +1,3 @@
+interface IChartData {
+  getXyData(): XyData[];
+}

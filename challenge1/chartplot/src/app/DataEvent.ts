@@ -1,4 +1,6 @@
 class DataEvent implements IDataEvent {
+  private plotEngine: IPlotEngine;
+
   readValue(seriesName: string): number {
     if (seriesName in this.allValues)
       return this.allValues[seriesName];
@@ -16,7 +18,12 @@ class DataEvent implements IDataEvent {
     return values;
   }
 
-  constructor(eventData: any) {
+  execute() {
+    this.plotEngine.addData(this);
+  }
+
+  constructor(eventData: any, plotEngine: IPlotEngine) {
+    this.plotEngine = plotEngine;
     this.allValues = eventData;
     this.type = eventData.type;
     this.timestamp = eventData.timestamp;
