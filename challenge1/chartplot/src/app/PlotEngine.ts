@@ -18,6 +18,7 @@ export class PlotEngine implements IPlotEngine {
   private groups: string[];
   private beginDate: number;
   private endDate: number;
+  private maximumDataPoints = 1000;  // protection mechanism: receiving data points is stopped after we reach this limit.
 
   isStarted(): boolean {
     if (!this.startTimestamp)
@@ -78,6 +79,8 @@ export class PlotEngine implements IPlotEngine {
   addData(dataEvent: IDataEvent) {
     if (!this.isStarted() || !dataEvent.timestamp || dataEvent.timestamp < this.startTimestamp)
       return; // ignore this data event.
+    if (this.isTooMuchData())
+      return; // ignore this data event because the engine is flooded.
     this.fillTimeSeries(dataEvent);
   }
 
@@ -148,5 +151,12 @@ export class PlotEngine implements IPlotEngine {
   convertToTime(unixTimestampMs: number): Date {
     const date = new Date(unixTimestampMs * 1000);
     return date;
+  }
+
+  private isTooMuchData() {
+    let totalLength = 0;
+    for (let seriesId in this.timeSeries)
+      totalLength += this.timeSeries[seriesId].length;
+    return totalLength >= this.maximumDataPoints;
   }
 }

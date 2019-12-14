@@ -14,9 +14,6 @@ export class ChartComponent implements OnInit {
     this.updateChart(data);
   }
 
-  @ViewChild('myChart', null)
-  myChart: BaseChartDirective;
-
   barChartOptions = {
     scaleShowVerticalLines: true,
     responsive: true,
