@@ -114,6 +114,9 @@
     <TypeScriptCompile Include="chartplot\src\app\app.module.ts" />
     <TypeScriptCompile Include="chartplot\src\app\chart\chart.component.spec.ts" />
     <TypeScriptCompile Include="chartplot\src\app\chart\chart.component.ts" />
+    <AdditionalFiles Include="chartplot\src\app\DataEvent.ts" />
+    <AdditionalFiles Include="chartplot\src\app\events.ts" />
+    <TypeScriptCompile Include="chartplot\src\app\PlotEngine.ts" />
     <TypeScriptCompile Include="chartplot\src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="chartplot\src\environments\environment.ts" />
     <TypeScriptCompile Include="chartplot\src\main.ts" />

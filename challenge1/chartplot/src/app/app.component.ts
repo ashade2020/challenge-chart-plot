@@ -1,25 +1,22 @@
 import { Component } from '@angular/core';
 
-interface IBasicEvent {
-  type: string;
-  timestamp: number;
-}
+class TimeSeriesKey {
+  private group: string[];
+  private seriesName: string;
 
-interface IStartEvent extends IBasicEvent {
-  select: string[];
-  group: string[];
-}
+  constructor(groupValues: string[], seriesName: string) {
+    this.group = groupValues;
+    this.seriesName = seriesName;
+  }
 
-interface ISpanEvent extends IBasicEvent {
-  begin: number;
-  end: number;
-}
-
-interface IStopEvent extends IBasicEvent {
-}
-
-interface IDataEvent extends IBasicEvent {
-  readValue(grouping: string, select: string): number;
+  getFormattedKey(): string {
+    let formattedValue = "";
+    for (let groupValue of this.group) {
+      formattedValue += groupValue + "____";
+    }
+    formattedValue += this.seriesName;
+    return formattedValue;
+  }
 }
 
 @Component({
@@ -80,7 +77,7 @@ export class AppComponent {
     case "stop":
       return parsedEvent as IStopEvent;
     case "data":
-      return parsedEvent as IDataEvent;
+      return new DataEvent(parsedEvent);
     case "span":
       return parsedEvent as ISpanEvent;
     default:
@@ -89,10 +86,11 @@ export class AppComponent {
   }
 
   getChartDataFromEvents(events: IBasicEvent[]) {
-    let plotEngine: any;
+    let plotEngine: PlotEngine;
     for (let event of events) {
-      event.run()
+      plotEngine.setStart(event);
     }
+    return plotEngine.readChartData();
   }
 
   updateChart(newData: void) {
