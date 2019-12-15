@@ -25,3 +25,7 @@ mwlResizable {
 ace-editor {
   border-bottom: 8px solid black;
 }
+
+.whitespace {
+  height: 30px;
+}

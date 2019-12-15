@@ -9,6 +9,8 @@ import { ChartsModule } from 'ng2-charts';
 import { ChartComponent } from './chart/chart.component';
 import { ResizableModule } from 'angular-resizable-element';
 
+import { Factory } from "./models/factory/Factory.service";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,4 +26,5 @@ import { ResizableModule } from 'angular-resizable-element';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

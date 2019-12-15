@@ -1,5 +1,5 @@
-import { IStartEvent, ISpanEvent, IStopEvent, IDataEvent } from "./events";
-import { IChartData } from "./chart/IChartData";
+import { IStartEvent, ISpanEvent, IStopEvent, IDataEvent } from "../events/events";
+import { IChartData } from "../charting/IChartData";
 
 export interface IPlotEngine {
   /**

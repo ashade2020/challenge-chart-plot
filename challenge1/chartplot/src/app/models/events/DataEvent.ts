@@ -1,5 +1,5 @@
 import { IDataEvent } from "./events";
-import { IPlotEngine } from "./IPlotEngine";
+import { IPlotEngine } from "../engine/IPlotEngine";
 
 export class DataEvent implements IDataEvent {
   private plotEngine: IPlotEngine;
@@ -8,7 +8,7 @@ export class DataEvent implements IDataEvent {
     if (seriesName in this.allValues)
       return this.allValues[seriesName];
     else
-      return 0.0;
+      return null;
   }
 
   readGroupValues(group: string[]): string[] {

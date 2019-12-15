@@ -1,7 +1,7 @@
-import { IPlotEngine } from "./IPlotEngine";
-import { ISpanEvent } from "./events";
+import { IPlotEngine } from "../engine/IPlotEngine";
+import { IStopEvent } from "./events";
 
-export class SpanEvent implements ISpanEvent {
+export class StopEvent implements IStopEvent {
   private plotEngine: IPlotEngine;
 
   constructor(eventData: any, plotEngine: IPlotEngine) {
@@ -10,11 +10,9 @@ export class SpanEvent implements ISpanEvent {
   }
 
   execute() {
-    this.plotEngine.setRange(this);
+    this.plotEngine.setStop(this);
   }
 
   type: string;
   timestamp: number;
-  begin: number;
-  end: number;
 }

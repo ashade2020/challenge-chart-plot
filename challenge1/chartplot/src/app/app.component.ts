@@ -1,14 +1,13 @@
+import {Inject} from '@angular/core'
+
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
 
-import { PlotEngine } from './PlotEngine'
-import { IPlotEngine } from "./IPlotEngine";
-import { IChartData } from "./chart/IChartData";
-import { IBasicEvent, IStopEvent, ISpanEvent } from "./events";
-import { StartEvent } from "./StartEvent";
-import { DataEvent } from "./DataEvent";
-import { StopEvent } from "./StopEvent";
-import { SpanEvent } from "./SpanEvent";
+import { IPlotEngine } from "./models/engine/IPlotEngine";
+import { IChartData } from "./models/charting/IChartData";
+import { IBasicEvent } from "./models/events/events";
+import { IFactory} from "./models/factory/IFactory";
+import { Factory } from "./models/factory/Factory.service";
 
 @Component({
   selector: 'app-root',
@@ -28,12 +27,19 @@ export class AppComponent implements AfterViewInit {
   plotData: IChartData;
   editorHeight = 200;
 
-  constructor() {
-    this.plotEngine = new PlotEngine(); // todo: remove new keyword and use a factory pattern.
+  /**
+   * Ctor called by Angular Core.
+   * @param factory A factory instance. This instance is injected using the dependency injection pattern
+   * (https://angular.io/guide/dependency-injection). This factory is used to encapsulate concrete classes
+   * instantiation; this way, come concrete classes can be easily mocked during unit testing. See https://en.wikipedia.org/wiki/Factory_method_pattern
+   * for more about the Factory Method design pattern.
+   */
+  constructor(private readonly factory: Factory) {
+    this.plotEngine = factory.newPlotEngine();
   }
 
   onEventsChanged(jsonData: string) {
-    this.currentData = jsonData.split("\n");
+    this.currentData = jsonData.split("\n"); // I'm assuming events are separated by line breaks.
   }
 
   generateChart() {
@@ -43,13 +49,13 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.editor.getEditor().getSession().setUseWorker(false);
+    this.editor.getEditor().getSession().setUseWorker(false); // disable error checking.
   }
 
   private parseEvents(): IBasicEvent[] {
     const currentData = this.currentData;
     if (!currentData)
-      return null; // todo: what should be the behaviour when events are not specified?
+      return null; // what should be the behaviour when events are not specified?
     return this.readAndParseEachEvent(currentData);
   }
 
@@ -59,8 +65,8 @@ export class AppComponent implements AfterViewInit {
       if (!event)
         continue;
       const parsedEvent = this.parseJson(event);
-      if (!parsedEvent.type)
-        continue; // todo: should we ignore events without a "type" value?
+      if (!parsedEvent || !parsedEvent.type || !parsedEvent.timestamp)
+        continue; // should we ignore events without a "type" or "timestamp" value?
       eventsParsed.push(this.readEventType(parsedEvent));
     }
     return eventsParsed;
@@ -80,13 +86,13 @@ export class AppComponent implements AfterViewInit {
   private readEventType(parsedEvent: any): IBasicEvent {
     switch (parsedEvent.type) {
     case "start":
-      return new StartEvent(parsedEvent, this.plotEngine);
+      return this.factory.newStartEvent(parsedEvent, this.plotEngine);
     case "stop":
-      return new StopEvent(parsedEvent, this.plotEngine);
+      return this.factory.newStopEvent(parsedEvent, this.plotEngine);
     case "data":
-      return new DataEvent(parsedEvent, this.plotEngine);
+      return this.factory.newDataEvent(parsedEvent, this.plotEngine);
     case "span":
-      return new SpanEvent(parsedEvent, this.plotEngine);
+      return this.factory.newSpanEvent(parsedEvent, this.plotEngine);
     default:
       return null;
     }

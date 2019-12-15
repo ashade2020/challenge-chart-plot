@@ -1,4 +1,4 @@
-import { IPlotEngine } from "./IPlotEngine";
+import { IPlotEngine } from "../engine/IPlotEngine";
 import { IStartEvent } from "./events";
 
 export class StartEvent implements IStartEvent {

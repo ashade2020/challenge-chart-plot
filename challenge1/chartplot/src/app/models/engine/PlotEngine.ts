@@ -1,14 +1,14 @@
 import { IPlotEngine } from './IPlotEngine'
-import { IStartEvent, ISpanEvent, IStopEvent, IDataEvent } from "./events";
-import { IChartData } from "./chart/IChartData";
-import { XyData } from "./chart/XyData";
-import { ChartData } from "./ChartData";
+import { IStartEvent, ISpanEvent, IStopEvent, IDataEvent } from "../events/events";
+import { IChartData } from "../charting/IChartData";
+import { XyData } from "../charting/XyData";
+import { IFactory } from "../factory/IFactory";
 
 export class PlotEngine implements IPlotEngine {
   /**
    * This class is the receiver equivalent of the command design pattern
    * (https://en.wikipedia.org/wiki/Command_pattern). It works like a state machine that
-   * registers all data, grouped by timeseries (group, select) key and takes care of the events
+   * registers all data, grouped by timeseries [(group, select) key] and takes care of the events
    * sequence.
    */
   private startTimestamp: number;
@@ -18,7 +18,11 @@ export class PlotEngine implements IPlotEngine {
   private groups: string[];
   private beginDate: number;
   private endDate: number;
-  private maximumDataPoints = 1000;  // protection mechanism: receiving data points is stopped after we reach this limit.
+  private maximumDataPoints = 1000; // protection mechanism: receiving data points is stopped after we reach this limit.
+
+  constructor(private readonly factory: IFactory) {
+    this.doReset();
+  }
 
   isStarted(): boolean {
     if (!this.startTimestamp)
@@ -62,10 +66,6 @@ export class PlotEngine implements IPlotEngine {
     this.lastStopTimestamp = stopEvent.timestamp;
   }
 
-  constructor() {
-    this.doReset();
-  }
-
   private doReset() {
     this.startTimestamp = null;
     this.lastStopTimestamp = null;
@@ -92,6 +92,8 @@ export class PlotEngine implements IPlotEngine {
 
   private pushNewTimeSeriesValue(dataEvent: IDataEvent, groupValues: string[], seriesName: string) {
     const seriesValue = dataEvent.readValue(seriesName);
+    if (!seriesValue)
+      return;
     const key = this.getFormattedKey(groupValues, seriesName);
     if (key in this.timeSeries)
       this.timeSeries[key].push([dataEvent.timestamp, seriesValue]);
@@ -109,11 +111,17 @@ export class PlotEngine implements IPlotEngine {
   }
 
   readChartData(): IChartData {
+    if (!this.timeSeries)
+      return null;
     const xyDataArray: XyData[] = [];
     const timeSeries = this.timeSeries;
     for (let seriesLabel in timeSeries)
-      this.buildXyDataArray(timeSeries[seriesLabel], seriesLabel, xyDataArray);
-    return new ChartData(xyDataArray, [this.convertToTime(this.beginDate), this.convertToTime(this.endDate)]);
+      if (timeSeries.hasOwnProperty(seriesLabel))
+        this.buildXyDataArray(timeSeries[seriesLabel], seriesLabel, xyDataArray);
+    if (xyDataArray.length <= 0)
+      return null;
+    return this.factory.newChartData(xyDataArray,
+      [this.convertToTime(this.beginDate), this.convertToTime(this.endDate)]);
   }
 
   private buildXyDataArray(seriesValues: [number, number][], seriesLabel: string, currentXyDataArray: XyData[]) {
@@ -149,14 +157,18 @@ export class PlotEngine implements IPlotEngine {
   }
 
   convertToTime(unixTimestampMs: number): Date {
+    if (!unixTimestampMs)
+      return null;
     const date = new Date(unixTimestampMs * 1000);
     return date;
   }
 
   private isTooMuchData() {
     let totalLength = 0;
-    for (let seriesId in this.timeSeries)
-      totalLength += this.timeSeries[seriesId].length;
+    const timeSeries = this.timeSeries;
+    for (let seriesId in timeSeries)
+      if (timeSeries.hasOwnProperty(seriesId))
+        totalLength += timeSeries[seriesId].length;
     return totalLength >= this.maximumDataPoints;
   }
 }

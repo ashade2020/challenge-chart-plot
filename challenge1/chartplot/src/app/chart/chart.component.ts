@@ -1,7 +1,5 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { IChartData } from "./IChartData";
-
-import { BaseChartDirective } from 'ng2-charts/ng2-charts';
+import { Component, OnInit, Input } from '@angular/core';
+import { IChartData } from "../models/charting/IChartData";
 
 @Component({
   selector: 'app-chart',
@@ -74,8 +72,6 @@ export class ChartComponent implements OnInit {
       };
     }
   }
-
-  constructor() {}
 
   ngOnInit() {
   }

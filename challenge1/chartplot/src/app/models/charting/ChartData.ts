@@ -1,5 +1,5 @@
-import { IChartData } from "./chart/IChartData";
-import { XyData } from "./chart/XyData";
+import { IChartData } from "./IChartData";
+import { XyData } from "./XyData";
 
 export class ChartData implements IChartData {
   private xSpan: [Date, Date];
