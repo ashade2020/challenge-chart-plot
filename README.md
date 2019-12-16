@@ -1,9 +1,9 @@
 # Plotting a chart
-PLEASE SCROLL DOWN TO READ THE ORIGINAL STATEMENT OF THE PROBLEM
+SCROLL DOWN TO READ THE ORIGINAL STATEMENT OF THE PROBLEM
 
 ## Introduction
 
-This problem has been solved using Angular and Typescript 1.8. Typescript is a supersed of JavaScript and is compiled to JavaScript during deploy
+This problem has been solved using Angular and Typescript 3. Typescript is a supersed of JavaScript and is compiled to JavaScript during deploy
 (https://www.typescriptlang.org/).
 
 All the relevant code is within the chartplot folder. The chartplot/src/app folder contains the main app component and the charting component codes.
@@ -21,8 +21,19 @@ To display the charts, I used the module ng2-charts (https://valor-software.com/
 
 Finally, all the ploting logic is encapsulated within the class ChartComponent, declared in the file chart.component.ts (chartplot/src/app/chart).
 
+## Code Style
+This project used Visual Studio Community 2019, hence the .sln and .csproj files. Moreover, I used the excelent Resharper Ultimate plugin (https://www.jetbrains.com/resharper/), which is an AI powered realtime coding assistant that supports many languages, including Typescript.
+
+The code style follows the guidelines of the book Clean Code: A Handbook of Agile Software Craftsmanship (https://www.amazon.com.br/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882). Basically, comments are kept to a minimum and code should be self-explainable. Methods should be small (at most 10 lines) and tell a story of what it is doing. Names should be long enough to be self-explanatory. Classes should be small. Files should be small.
+
+Finally, I also accepted most of the suggestions of Resharper (add readonly keyword, use const intead of let when possible, check for property existence in "for in" loops, and so on...). 
+
 ## Running the code
-To run the code, you will need to clone the repository to your local machine, then execute "npm install" within the folder challenge1/chartplot. This will install all the modules needed to compile the code. Then, after instalation is completed, just run "ng serve" and go to the URL displayed in the console to view the website.
+Tools: you will need Node.js version 10 or later and NPM version 6 or later.
+
+To run the code, you will need to clone the repository to your local machine, then execute the command "npm install" within the folder challenge1/chartplot. This will install all the modules needed to compile the code. Then, after instalation is completed, just run "ng serve" and go to the URL displayed in the console to view the website.
+
+If you want to build a production version of the code, just execute the command "ng build --prod" and go to the challenge1/chartplot/dist/chartplot/ folder to locate the index.html file. Some browsers (including Chrome and Firefox) may deny access/execution to the scripts, so you better mount a local webserver within this folder to see the production version of site.
 
 ## Protection mechanism for huge amounts of data
 To avoid breaking the application memory at the client, I decided to limit the total number of data points to 1000. Of course, this number is arbitrary and nonsense, unless we are provided with more information about the demands of the application.
@@ -42,7 +53,7 @@ Since some behaviours are not fully specified, I needed to take some decisions:
 
 5 - since the template does not specify colors, I tried to use similar colors (exception: the code editor, which uses the monokai theme).
 
-6 - the code editor height can be changed: just drag its bottom border down or up. After releasing the mouse button, the chart will adapt to the new editor height.
+6 - the code editor height CAN be changed: just drag its bottom border down or up. After releasing the mouse button, the chart will adapt to the new editor height.
 
 7 - non standard JSON is supported (unquoted/single quoted). However, I require that each event declaration takes only one line. Example:
 
@@ -58,12 +69,16 @@ Since some behaviours are not fully specified, I needed to take some decisions:
 {type: 'data', timestamp: 1519780251299, os: 'windows', browser: 'chrome', min_response_time: 0.95, max_response_time: 1.18}  
 {type: 'stop', timestamp: 1519780260210}
 
+8 - I'm assuming this example is part of a real time chart ploting system. Therefore, data should keep comming as a continuous stream. As a result, the Plot Engine is implemented a state machine that records the timestamp of the last stop event. If forecoming events have timestamp smaller than of equal to the last stop event, then they will be ignored. For example, if we plot the json data on item 7 and the try to plot it again with a small modification on the browser value, this new event block will be ignored for it has timestamps non-greater than 1519780260210.
+
 
 ## Testing
 
+Some basic unit tests can be found in the files ending with .spec.ts. This is the Angular pattern for testing. Obviously, dozens of test cases could be coded, but again: time is short. Hopefully my tests can prove I know how to do it... ;)
 
+## Browser Support
 
-
+This code is supposed to work in all major Browsers, including Edge and IE11.
 
 
 ################ ORIGINAL TEXT #################

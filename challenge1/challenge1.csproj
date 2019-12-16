@@ -112,18 +112,21 @@
     <TypeScriptCompile Include="chartplot\src\app\app.component.spec.ts" />
     <TypeScriptCompile Include="chartplot\src\app\app.component.ts" />
     <TypeScriptCompile Include="chartplot\src\app\app.module.ts" />
-    <TypeScriptCompile Include="chartplot\src\app\ChartData.ts" />
+    <TypeScriptCompile Include="chartplot\src\app\models\charting\ChartData.ts" />
     <TypeScriptCompile Include="chartplot\src\app\chart\chart.component.spec.ts" />
     <TypeScriptCompile Include="chartplot\src\app\chart\chart.component.ts" />
-    <AdditionalFiles Include="chartplot\src\app\DataEvent.ts" />
-    <AdditionalFiles Include="chartplot\src\app\events.ts" />
-    <AdditionalFiles Include="chartplot\src\app\IPlotEngine.ts" />
-    <TypeScriptCompile Include="chartplot\src\app\chart\IChartData.ts" />
-    <AdditionalFiles Include="chartplot\src\app\chart\XyData.ts" />
-    <TypeScriptCompile Include="chartplot\src\app\PlotEngine.ts" />
-    <AdditionalFiles Include="chartplot\src\app\SpanEvent.ts" />
-    <TypeScriptCompile Include="chartplot\src\app\StartEvent.ts" />
-    <AdditionalFiles Include="chartplot\src\app\StopEvent.ts" />
+    <AdditionalFiles Include="chartplot\src\app\models\events\DataEvent.ts" />
+    <AdditionalFiles Include="chartplot\src\app\models\events\events.ts" />
+    <AdditionalFiles Include="chartplot\src\app\models\engine\IPlotEngine.ts" />
+    <TypeScriptCompile Include="chartplot\src\app\models\charting\IChartData.ts" />
+    <AdditionalFiles Include="chartplot\src\app\models\charting\XyData.ts" />
+    <TypeScriptCompile Include="chartplot\src\app\models\engine\PlotEngine.spec.ts" />
+    <TypeScriptCompile Include="chartplot\src\app\models\engine\PlotEngine.ts" />
+    <AdditionalFiles Include="chartplot\src\app\models\events\SpanEvent.ts" />
+    <TypeScriptCompile Include="chartplot\src\app\models\events\StartEvent.ts" />
+    <AdditionalFiles Include="chartplot\src\app\models\events\StopEvent.ts" />
+    <AdditionalFiles Include="chartplot\src\app\models\factory\Factory.service.ts" />
+    <TypeScriptCompile Include="chartplot\src\app\models\factory\IFactory.ts" />
     <TypeScriptCompile Include="chartplot\src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="chartplot\src\environments\environment.ts" />
     <TypeScriptCompile Include="chartplot\src\main.ts" />
@@ -133,6 +136,7 @@
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
