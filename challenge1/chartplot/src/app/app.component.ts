@@ -1,4 +1,4 @@
-import {Inject} from '@angular/core'
+import { Inject } from '@angular/core'
 
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
@@ -6,7 +6,7 @@ import { ResizeEvent } from 'angular-resizable-element';
 import { IPlotEngine } from "./models/engine/IPlotEngine";
 import { IChartData } from "./models/charting/IChartData";
 import { IBasicEvent } from "./models/events/events";
-import { IFactory} from "./models/factory/IFactory";
+import { IFactory } from "./models/factory/IFactory";
 import { Factory } from "./models/factory/Factory.service";
 
 @Component({
